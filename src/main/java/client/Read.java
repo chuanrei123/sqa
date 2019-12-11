@@ -49,8 +49,10 @@ public class Read implements Runnable  {
             removeHeader = removeHeader[1].split("=>concat<=");
             List<String> allUserOnline = Arrays.asList(removeHeader);
             controller.updateOnlineUser(allUserOnline);
-        } else {
-
+        } else if(incomingMsg.startsWith("msgHeader:=>")) {
+            String[] removeHeader = incomingMsg.split("(msgHeader:=>)");
+            removeHeader = removeHeader[1].split("=>concat<=");
+            controller.displayMsg(removeHeader[0], removeHeader[1]);
         }
     }
 }

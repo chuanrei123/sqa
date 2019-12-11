@@ -8,7 +8,7 @@
    <children>
       <Button fx:id="sendBtn" layoutX="411.0" layoutY="375.0" mnemonicParsing="false" onAction="#setSendBtn" text="Send" />
       <TextArea fx:id="displayMsgArea" layoutX="26.0" layoutY="32.0" prefHeight="252.0" prefWidth="428.0" />
-      <TextField fx:id="sendMsgTextField" layoutX="26.0" layoutY="304.0" prefHeight="61.0" prefWidth="428.0" />
+      <TextField fx:id="sendMsgTextField" layoutX="26.0" layoutY="304.0" onAction="#setSendBtn" prefHeight="61.0" prefWidth="428.0" />
       <TextArea fx:id="displayTotalUsersOnlineArea" layoutX="462.0" layoutY="95.0" prefHeight="270.0" prefWidth="153.0" />
       <Label layoutX="462.0" layoutY="23.0" prefHeight="35.0" prefWidth="153.0" text="Online Users:">
          <font>

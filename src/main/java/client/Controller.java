@@ -15,8 +15,6 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
 
     @FXML
-    private Button sendBtn;
-    @FXML
     private TextArea displayMsgArea;
     @FXML
     private TextArea displayTotalUsersOnlineArea;
@@ -28,10 +26,12 @@ public class Controller implements Initializable {
     private String senderMsg;
     private String loginUsername;
     private ClientServer clientServer;
+    private static String incomingMsg = "\n";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        displayTotalUsersOnlineArea.setEditable(false);
+        displayMsgArea.setEditable(false);
     }
 
     public void init(ClientServer clientServer) {
@@ -42,7 +42,11 @@ public class Controller implements Initializable {
     @FXML
     public void setSendBtn() {
         senderMsg = sendMsgTextField.getText();
+        String messageHeader = "msgHeader:=>";
         String myConnectionId = clientServer.getConnectionID();
+        String stringToSend = messageHeader + myConnectionId + "=>concat<=" + senderMsg;
+        clientServer.writeMessage(stringToSend);
+        sendMsgTextField.setText("");
     }
 
     public void createLoginDialog() {
@@ -112,5 +116,11 @@ public class Controller implements Initializable {
             userCountLabel.setText(Integer.toString(username.size() - 1));
             displayTotalUsersOnlineArea.setText(usernameToDisplay);
         });
+    }
+
+    public void displayMsg(String username, String msg) {
+        String msgConfig = username + ": " + msg + "\n";
+        incomingMsg = incomingMsg + msgConfig;
+        displayMsgArea.setText(incomingMsg);
     }
 }

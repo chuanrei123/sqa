@@ -49,8 +49,7 @@ public class Connection implements Runnable {
 				System.out.println(incomingMessage);
 			}
 		} catch (IOException e) {
-			System.out.println("in or out failed");
-			System.exit(-1);
+			removeUsers();
 		}
 
 	}
@@ -68,8 +67,21 @@ public class Connection implements Runnable {
 			for(int i = 0; i < connectionList.size(); i++) {
 				System.out.println(usernameList.get(i) + "  " + connectionList.get(i));
 			}
-		} else {
-			serverReference.broadcastMessage(incomingMsg);
+		} else if(incomingMsg.startsWith("msgHeader:=>")){
+			String[] removeHeader = incomingMsg.split("(msgHeader:=>)");
+			removeHeader = removeHeader[1].split("=>concat<=");
+			String connectionId = removeHeader[0];
+			String msgBody = removeHeader[1];
+			String name = "";
+			String encodedMsg = "";
+
+			for (int i = 0; i< connectionList.size(); i++) {
+				if(connectionList.get(i).matches(connectionId)) {
+					name = usernameList.get(i);
+					encodedMsg = "msgHeader:=>" + name + "=>concat<=" + msgBody;
+				}
+			}
+			serverReference.broadcastMessage(encodedMsg);
 		}
 	}
 
@@ -91,7 +103,10 @@ public class Connection implements Runnable {
 	public void sendMessages(String message) {
 		out.println(message);
 	}
-	
+
+	public void removeUsers() {
+		System.out.println("Some one left");
+	}
 }
 
 	

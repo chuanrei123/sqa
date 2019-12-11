@@ -48,7 +48,6 @@ public class ClientServer {
 
     // Function to write message to the server
     public void writeMessage(String msgString) {
-        String msgHeader = "msgHeader:=>";
         if(msgString != "") {
             try {
                 output = new DataOutputStream(socket.getOutputStream());
