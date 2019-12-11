@@ -15,6 +15,7 @@ public class Main extends Application {
     Controller controller;
     FXMLLoader loader;
     String loginUsername;
+    ClientServer client;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -32,7 +33,13 @@ public class Main extends Application {
         controller = loader.getController();
         controller.createLoginDialog();
         loginUsername = controller.getLoginUsername();
-        System.out.println("Get " + loginUsername);
+        if(loginUsername != null) {
+            try {
+                client = new ClientServer("127.0.0.1", 9000, loginUsername);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

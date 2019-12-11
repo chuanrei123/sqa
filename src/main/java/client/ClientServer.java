@@ -1,0 +1,59 @@
+package client;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+
+public class ClientServer {
+
+    private Socket socket = null;
+    private DataInputStream input = null;
+    private DataOutputStream output = null;
+    public ObjectOutputStream oos;
+    public Read readThread;
+//    private ChatServer server = null;
+
+    public ClientServer (String address, int port, String loginUsername) {
+        try {
+            socket = new Socket(address, port);
+            System.out.println("Connected to server at port: " + port);
+
+//            writeUsernameToServer(loginUsername);
+            // Thread to listen to incoming messages
+            readThread = new Read(socket);
+            Thread t = new Thread(readThread);
+            t.start();
+        } catch (UnknownHostException u) {
+            System.out.println("Unable to connect to server");
+        } catch (IOException e) {
+            System.out.println("Unable to connect to server");
+        }
+    }
+
+    public void writeUsernameToServer(String username) {
+        ArrayList<String> usernameList = new ArrayList<String>();
+        usernameList.add(username);
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(usernameList);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    // Function to write message to the server
+    public void writeMessage(String msgString) {
+        if(msgString != "") {
+            try {
+                output = new DataOutputStream(socket.getOutputStream());
+                output.writeUTF(msgString);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
+}

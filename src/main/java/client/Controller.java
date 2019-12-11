@@ -32,13 +32,10 @@ public class Controller implements Initializable {
 
     }
 
-    // Get the send msg and set to text field
-    public void setSendMsgTextField() {
-        senderMsg = sendMsgTextField.getText();
-    }
-
+    // Function to set the send Msg text
     @FXML
     public void setSendBtn() {
+        senderMsg = sendMsgTextField.getText();
         System.out.println(senderMsg);
     }
 
