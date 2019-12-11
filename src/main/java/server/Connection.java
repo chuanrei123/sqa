@@ -1,9 +1,6 @@
 package server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -20,54 +17,43 @@ public class Connection implements Runnable {
 	private BufferedReader in;
 	private PrintWriter out;
 	private String username;
+	private DataInputStream dataInputStream;
+	private DataOutputStream dataOutputStream;
 	
 	Connection (Socket client, Server serverReference) {
 		this.serverReference = serverReference;
 		this.client = client;
-		this.state = STATE_UNREGISTERED;
-		messageCount = 0;
+		try {
+			this.dataInputStream = new DataInputStream(client.getInputStream());
+			this.dataOutputStream = new DataOutputStream(client.getOutputStream());
+		} catch  (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	public void run(){
-		String line;
 		try {
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			out = new PrintWriter(client.getOutputStream(), true);
+
+			while(true) {
+				String incomingMessage = dataInputStream.readUTF();
+				System.out.println(incomingMessage);
+			}
 		} catch (IOException e) {
 			System.out.println("in or out failed");
 			System.exit(-1);
 		}
-		running = true;
-		this.sendOverConnection("OK Welcome to the chat server, there are currelty " + serverReference.getNumberOfUsers() + " user(s) online");
-		while(running) {
-			try {
-				line = in.readLine();
-			} catch (IOException e) {
-				System.out.println("Read failed");
-				System.exit(-1);
-			}
-		}
-	}
 
-
-	public boolean isRunning(){
-		return running;
-	}
-	
-	private synchronized void sendOverConnection (String message){
-		out.println(message);
-	}
-	
-	public void messageForConnection (String message){
-		sendOverConnection(message);
-	}
-	
-	public int getState() {
-		return state;
 	}
 	
 	public String getUserName() {
 		return username;
+	}
+
+	public void sendMessages(String message) {
+		out.println(message);
 	}
 	
 }

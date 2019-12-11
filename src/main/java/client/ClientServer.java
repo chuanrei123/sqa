@@ -22,24 +22,24 @@ public class ClientServer {
             socket = new Socket(address, port);
             System.out.println("Connected to server at port: " + port);
 
-//            writeUsernameToServer(loginUsername);
+            writeUsernameToServer(loginUsername);
             // Thread to listen to incoming messages
             readThread = new Read(socket);
             Thread t = new Thread(readThread);
             t.start();
-        } catch (UnknownHostException u) {
-            System.out.println("Unable to connect to server");
-        } catch (IOException e) {
+        } catch (Exception u) {
             System.out.println("Unable to connect to server");
         }
     }
 
+    // Function to write username to the server
     public void writeUsernameToServer(String username) {
-        ArrayList<String> usernameList = new ArrayList<String>();
-        usernameList.add(username);
+        String usernameHeader = "usernameHeader:=>";
+        String encodedUsernameString = usernameHeader + username;
+
         try {
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(usernameList);
+            output = new DataOutputStream(socket.getOutputStream());
+            output.writeUTF(encodedUsernameString);
         } catch (Exception e) {
             System.out.println(e);
         }

@@ -35,22 +35,13 @@ public class Server {
 				list.add(c);
 		}
 	}
-	
-	public ArrayList<String> getUserList() {
-		ArrayList<String> userList = new ArrayList<String>();
-		for( Connection clientThread: list){
-			if(clientThread.getState() == Connection.STATE_REGISTERED) {
-				userList.add(clientThread.getUserName());
-			}
-		}
-		return userList;
-	}
+
 
 	// Function to broadcast message to all the connected users
 	public void broadcastMessage(String theMessage){
 		System.out.println(theMessage);
 		for( Connection clientThread: list){
-			clientThread.messageForConnection(theMessage + System.lineSeparator());	
+//			clientThread.messageForConnection(theMessage + System.lineSeparator());
 		}
 	}
 
