@@ -29,6 +29,12 @@ public class Main extends Application {
         primaryStage.setTitle("My Chat");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.exit(-1);
+            }
+        });
 
         controller = loader.getController();
         controller.createLoginDialog();

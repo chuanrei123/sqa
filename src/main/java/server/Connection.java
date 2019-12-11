@@ -3,6 +3,8 @@ package server;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Connection implements Runnable {
 	
@@ -64,9 +66,6 @@ public class Connection implements Runnable {
 			String username = removedHeader[1];
 			usernameList.add(username);
 			broadcastTotalUsers(username);
-			for(int i = 0; i < connectionList.size(); i++) {
-				System.out.println(usernameList.get(i) + "  " + connectionList.get(i));
-			}
 		} else if(incomingMsg.startsWith("msgHeader:=>")){
 			String[] removeHeader = incomingMsg.split("(msgHeader:=>)");
 			removeHeader = removeHeader[1].split("=>concat<=");
@@ -105,7 +104,30 @@ public class Connection implements Runnable {
 	}
 
 	public void removeUsers() {
-		System.out.println("Some one left");
+		Connection connection = this;
+		String newOnlineUsers = "usersOnline:=>";
+		int positionToRemove = 0;
+
+		for (int i = 0; i< connectionList.size(); i++) {
+			if(connectionList.get(i).matches(connection.toString())){
+				connectionList.remove(i);
+				positionToRemove = i;
+				usernameList.remove(i);
+			}
+		}
+
+		String[] removeHeader = totalUsersHeader.split("usersOnline:=>");
+		removeHeader = removeHeader[1].split("=>concat<=");
+		List<String> allUserOnline = Arrays.asList(removeHeader);
+
+		for(int i = 1; i < allUserOnline.size(); i++) {
+			if(i != positionToRemove + 1) {
+				newOnlineUsers = newOnlineUsers + "=>concat<=" + allUserOnline.get(i);
+			}
+		}
+
+		totalUsersHeader = newOnlineUsers;
+		serverReference.broadcastMessage(totalUsersHeader);
 	}
 }
 
