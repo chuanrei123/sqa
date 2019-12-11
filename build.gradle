@@ -24,7 +24,7 @@ sourceSets {
     }
 }
 
-//mainClassName = 'clientchatui.ClientChatUI'
+mainClassName = 'client.Main'
 
 dependencies {
     testCompileOnly 'junit:junit:4.12'
