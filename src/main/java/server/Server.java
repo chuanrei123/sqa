@@ -10,6 +10,7 @@ public class Server {
 
 	private ServerSocket server;
 	private ArrayList<Connection> list;
+	private Connection c = null;
 
 	public Server (int port) {
 		try {
@@ -22,7 +23,7 @@ public class Server {
 		}
 		list = new ArrayList<Connection>();
 		while(true) {
-				Connection c = null;
+
 				try {
 					c = new Connection(server.accept(), this);
 				}
@@ -36,12 +37,15 @@ public class Server {
 		}
 	}
 
+	//Function to get connection id
+	public String getConnectionid() {
+		return c.toString();
+	}
 
 	// Function to broadcast message to all the connected users
 	public void broadcastMessage(String theMessage){
-		System.out.println(theMessage);
 		for( Connection clientThread: list){
-//			clientThread.messageForConnection(theMessage + System.lineSeparator());
+			clientThread.sendMessages(theMessage);
 		}
 	}
 

@@ -35,7 +35,8 @@ public class Main extends Application {
         loginUsername = controller.getLoginUsername();
         if(loginUsername != null) {
             try {
-                client = new ClientServer("127.0.0.1", 9000, loginUsername);
+                client = new ClientServer("127.0.0.1", 9000, loginUsername, controller);
+                controller.init(client);
             } catch (Exception e) {
                 e.printStackTrace();
             }

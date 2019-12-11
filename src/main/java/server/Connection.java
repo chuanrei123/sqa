@@ -19,6 +19,9 @@ public class Connection implements Runnable {
 	private String username;
 	private DataInputStream dataInputStream;
 	private DataOutputStream dataOutputStream;
+	private static ArrayList<String> usernameList = new ArrayList<>();
+	private static ArrayList<String> connectionList = new ArrayList<>();
+	private static String totalUsersHeader = "usersOnline:=>";
 	
 	Connection (Socket client, Server serverReference) {
 		this.serverReference = serverReference;
@@ -37,8 +40,12 @@ public class Connection implements Runnable {
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			out = new PrintWriter(client.getOutputStream(), true);
 
+			// Function to broadcast connection id to newly connected client
+			broadcastConnectionID();
+
 			while(true) {
 				String incomingMessage = dataInputStream.readUTF();
+				decodeMessage(incomingMessage);
 				System.out.println(incomingMessage);
 			}
 		} catch (IOException e) {
@@ -47,9 +54,38 @@ public class Connection implements Runnable {
 		}
 
 	}
-	
-	public String getUserName() {
-		return username;
+
+	public void decodeMessage(String incomingMsg) {
+		String usernameHeader = "usernameHeader:=>";
+		// If incoming message starts with "usernameHeader:=>" then means the
+		// incoming message is username
+		// else meaning that the incoming message is message from client
+		if(incomingMsg.startsWith(usernameHeader)) {
+			String[] removedHeader = incomingMsg.split("(usernameHeader:=>)");
+			String username = removedHeader[1];
+			usernameList.add(username);
+			broadcastTotalUsers(username);
+			for(int i = 0; i < connectionList.size(); i++) {
+				System.out.println(usernameList.get(i) + "  " + connectionList.get(i));
+			}
+		} else {
+			serverReference.broadcastMessage(incomingMsg);
+		}
+	}
+
+	// send connection id to individual client
+	public void broadcastConnectionID() {
+		String connectionHeader = "connectionHeader:=>";
+		connectionList.add(serverReference.getConnectionid());
+		connectionHeader = connectionHeader + serverReference.getConnectionid();
+		out.println(connectionHeader);
+	}
+
+	// Send all the online users to all the client
+	public void broadcastTotalUsers(String username) {
+		String concatHeader = "=>concat<=" + username;
+		totalUsersHeader = totalUsersHeader + concatHeader;
+		serverReference.broadcastMessage(totalUsersHeader);
 	}
 
 	public void sendMessages(String message) {

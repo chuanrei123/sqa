@@ -15,16 +15,17 @@ public class ClientServer {
     private DataOutputStream output = null;
     public ObjectOutputStream oos;
     public Read readThread;
+    public String connectionID;
 //    private ChatServer server = null;
 
-    public ClientServer (String address, int port, String loginUsername) {
+    public ClientServer (String address, int port, String loginUsername, Controller controller) {
         try {
             socket = new Socket(address, port);
             System.out.println("Connected to server at port: " + port);
 
             writeUsernameToServer(loginUsername);
             // Thread to listen to incoming messages
-            readThread = new Read(socket);
+            readThread = new Read(socket, this, controller);
             Thread t = new Thread(readThread);
             t.start();
         } catch (Exception u) {
@@ -47,6 +48,7 @@ public class ClientServer {
 
     // Function to write message to the server
     public void writeMessage(String msgString) {
+        String msgHeader = "msgHeader:=>";
         if(msgString != "") {
             try {
                 output = new DataOutputStream(socket.getOutputStream());
@@ -55,5 +57,13 @@ public class ClientServer {
                 System.out.println(e);
             }
         }
+    }
+
+    public void setConnectionID(String connectionID) {
+        this.connectionID = connectionID;
+    }
+
+    public String getConnectionID() {
+        return this.connectionID;
     }
 }

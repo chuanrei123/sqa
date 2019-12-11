@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -26,17 +27,22 @@ public class Controller implements Initializable {
 
     private String senderMsg;
     private String loginUsername;
+    private ClientServer clientServer;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
+    public void init(ClientServer clientServer) {
+        this.clientServer = clientServer;
+    }
+
     // Function to set the send Msg text
     @FXML
     public void setSendBtn() {
         senderMsg = sendMsgTextField.getText();
-        System.out.println(senderMsg);
+        String myConnectionId = clientServer.getConnectionID();
     }
 
     public void createLoginDialog() {
@@ -95,5 +101,16 @@ public class Controller implements Initializable {
     // Function to return username
     public String getLoginUsername() {
         return this.loginUsername;
+    }
+
+    public void updateOnlineUser(List<String> username) {
+        Platform.runLater(()->{
+            String usernameToDisplay = "";
+            for(int i = 1; i<username.size(); i++) {
+                usernameToDisplay = usernameToDisplay + "\n" + username.get(i);
+            }
+            userCountLabel.setText(Integer.toString(username.size() - 1));
+            displayTotalUsersOnlineArea.setText(usernameToDisplay);
+        });
     }
 }
