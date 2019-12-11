@@ -45,45 +45,16 @@ public class Server {
 		}
 		return userList;
 	}
-	
-	public boolean doesUserExist(String newUser) {
-		boolean result = false;
-		for( Connection clientThread: list){
-			if(clientThread.getState() == Connection.STATE_REGISTERED) {
-				result = clientThread.getUserName().compareTo(newUser)==0;
-			}
-		}
-		return result;
-	}
-	
+
+	// Function to broadcast message to all the connected users
 	public void broadcastMessage(String theMessage){
 		System.out.println(theMessage);
 		for( Connection clientThread: list){
 			clientThread.messageForConnection(theMessage + System.lineSeparator());	
 		}
 	}
-	
-	public boolean sendPrivateMessage(String message, String user) {
-		for( Connection clientThread: list) {
-			if(clientThread.getState() == Connection.STATE_REGISTERED) {
-				if(clientThread.getUserName().compareTo(user)==0) {
-					clientThread.messageForConnection(message + System.lineSeparator());
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public void removeDeadUsers(){
-		Iterator<Connection> it = list.iterator();
-		while (it.hasNext()) {
-			Connection c = it.next();
-			if(!c.isRunning())
-				it.remove();
-		}
-	}
-	
+
+	// Function to get the total of users online
 	public int getNumberOfUsers() {
 		return list.size();
 	}
